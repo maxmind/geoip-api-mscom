@@ -1,0 +1,203 @@
+GeoIPEx 1.2
+
+Copyright 2012 MaxMind, Inc.
+
+General
+-------
+
+GeoIPEx is a COM object wrapper around the Maxmind GeoIP library.
+It returns data from the City, ISP and Organization databases.
+The only added functionality is recognition of non-routed
+IP addresses, for which "dummy" data are returned
+(and no DB lookup is done). See "Special addresses" below.
+
+
+Implementation
+--------------
+
+The wrapper code was written in Visual C++ using the wizards etc.
+in Visual Studio 6 (SP5)
+The C code of the GeoIP library (GeoIp.c, GeoIPCity.c)
+remains almost unchanged, except for some #ifdef's in GeoIPCity.c
+to enable it to be built in Visual Studio. (Commented to indicate where.)
+To minimize modifications to the library code, while avoiding a fixed DB
+location, the GeoIP_open_type() routine is not used.
+GeoIP_open() is used instead. This leads to a slight maintenance issue; 
+the names of the three DB files are duplicated in GeoIPEx.cpp.
+
+Source File list
+----------------
+
+GeoIPComEx.dsw		VS workspace file; open this to load project etc.
+GeoIPComEx.dsp		VS project file
+
+GeoIPComEx.cpp		standard Com-object interface file, created by VS; registration code etc
+GeoIPComEx.idl		-"-; interface specification
+GeoIPComEx.h		-"-
+GeoIPComEx.tlb		-"-
+GeoIPComEx._i.c		-"-
+StdAfx.h		-"-; precompiled hdrs src
+StdAfx.cpp		-"-; precompiled hdrs src
+GeoIpEx.rgs		-"-
+GeoIPComEx.rc		-"-; resource file stuff, registration and version use
+Resource.h		-"-; resource file stuff, registration and version use
+GeoIPComEx.def		-"-; resource file stuff, registration and version use
+basetsd.h		-"-
+
+GeoIPEx.h		declaration of CGeoIpEx c++ class
+GeoIPEx.cpp		implementation of CGeoIpEx c++ class
+
+libgeoip\GeoIP.h	header for Maxmind c library, std functions
+libgeoip\GeoIP.c	Maxmind c library, std functions
+libgeoip\GeoIPCity.h	Maxmind c library header, city & isp/organization functions
+libgeoip\GeoIPCity.c	Maxmind c library code, city & isp/organization functions
+
+
+
+GeoIpEx routines
+----------------
+
+CGeoIPEx::set_db_path(BSTR newVal, VARIANT_BOOL *present)
+	Method; must be called before any other method or property is used
+	Sets all the suports_* properties.
+	Note that the booleans returned by methods
+	must be either VARIANT_TRUE or VARIANT_FALSE.
+	newVal should be a DIRECTORY not the full path to the
+	database.  The COM object will look for the files
+	using the directory plus the standard name for the
+	database as given at the end of this document.
+
+CGeoIPEx::find_by_name(BSTR ip_address, VARIANT_BOOL *found)
+	Method to find info by DNS name; calls find_ip()
+	Sets property fields
+
+CGeoIPEx::find_by_addr(BSTR ip_address, VARIANT_BOOL *found)
+	Method to find info by ip address (dotted quad string); calls find_ip()
+
+CGeoIPEx::get_country_code(BSTR *pVal)
+CGeoIPEx::get_country_code3(BSTR *pVal)
+CGeoIPEx::get_country_name(BSTR *pVal)
+CGeoIPEx::get_region(BSTR *pVal)
+CGeoIPEx::get_city(BSTR *pVal)
+CGeoIPEx::get_postal_code(BSTR *pVal)
+CGeoIPEx::get_latitude(double *pVal)
+CGeoIPEx::get_longitude(double *pVal)
+CGeoIPEx::get_dma_code(long *pVal)
+CGeoIPEx::get_area_code(long *pVal)
+CGeoIPEx::get_ISP(BSTR *pVal)
+CGeoIPEx::get_organization(BSTR *pVal)
+CGeoIPEx::get_error_msg(BSTR *pVal)
+	Data property reader methods; All return the value from the field with the same name.
+		
+CGeoIPEx::get_supports_country_code(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_country_name(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_city(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_country_code3(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_area_code(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_region(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_dma_code(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_postal_code(VARIANT_BOOL *pVal)
+CGeoIPEx::get_supports_position(VARIANT_BOOL *pVal)
+	Property reader methods; All return true if city DB was loaded.
+
+CGeoIPEx::get_supports_ISP(VARIANT_BOOL *pVal)
+	Property getter method; Return true if ISP DB was loaded.
+
+CGeoIPEx::get_supports_organization(VARIANT_BOOL *pVal)
+	Property getter method; Return true if org DB was loaded.
+
+CGeoIPEx::find_ip(LPCSTR addr, bool byname)
+	Private method to fetch property values from the databases.
+
+CGeoIPEx::clear_db()
+	Private metod to clear DB pointers.
+
+
+
+
+Building
+--------
+
+After opening the project in VS,
+select Build->Set Active Configuration, choose ("Debug" or "Release MinSize")
+and select Build->Build GeoIpComEx.dll. 
+
+If you wish to use other configurations,
+note that precompiled headers are turned off for the C files, and
+wsock32.dll is linked to (for dns lookups).
+
+
+
+
+Object interface
+----------------
+
+  Methods:
+	bool set_db_path(string path) (must be set before any other operations, true if all dbs found)
+	bool find_by_addr(string ipvalue) (return true if address found, sets all properties)
+	bool find_by_name(string dns_name) (-"-)
+
+  Properties: (string type unless otherwise noted)
+	country_code (2 chars; "LN" if non-routed addr, "LH" if localhost)
+	country_code3 (3 chars)
+	country_name ("Local Area Network" if non-routed addr,"Localhost" if localhost)
+	region    (2 chars, state abbrev for US/Canada, FIPS 10-4 region code for others)
+	city
+	postal_code (max 6 chars, US and Canada only)
+	latitude  (real number)
+	longitude (real number)
+	dma_code  (integer)
+	area_code (integer)
+
+	ISP
+	organization
+
+	supports_country_code (bool, true if db file exists)
+	supports_country_code3 (bool, true if db file exists)
+	supports_country_name (bool, true if db file exists)
+	supports_city (bool, true if db file exists)
+	supports_region (bool, true if db file exists)
+	supports_postal_code (bool, true if db file exists)
+	supports_position (bool, true if db file exists)
+	supports_area_code (bool, true if db file exists)
+	supports_dma_code (bool, true if db file exists)
+
+	supports_organization (bool, true if db file exists)
+
+	supports_isp (bool, true if db file exists)
+
+	error_msg (for debugging, set on unexpected failures)
+
+
+
+Special addresses
+-----------------
+
+If one of the non-routed ip addresses 
+	10.*.*.*
+	172.16.*.* ... 172.31.*.*
+	192.168.*.*
+are given as input to find_by_addr(),
+country_code is set to "LN"
+country_name to "Local Area Network" and
+all other fields are cleared.
+
+If ip addresses of the form 127.*.*.* (localhost)
+are given as input to find_by_addr(),
+country_code is set to "LH",
+country_name to "Localhost" and
+all other fields are cleared.
+
+
+Database Paths
+--------------
+
+Install the databases in the directory set by set_db_path
+
+The names of the files should be the ones listed below.
+
+/path/GeoIP.dat		(country)
+/path/GeoIPRegion.dat	(region)
+/path/GeoIPCity.dat	(City)
+/path/GeoIPISP.dat	(ISP)
+/path/GeoIPOrg.dat	(Organization)

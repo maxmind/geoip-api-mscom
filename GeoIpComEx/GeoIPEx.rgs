@@ -1,0 +1,26 @@
+HKCR
+{
+	GeoIpComEx.GeoIPEx.1 = s 'GeoIPEx Class'
+	{
+		CLSID = s '{F4ACE0F0-73D1-42F6-9521-A76408B433EC}'
+	}
+	GeoIpComEx.GeoIPEx = s 'GeoIPEx Class'
+	{
+		CLSID = s '{F4ACE0F0-73D1-42F6-9521-A76408B433EC}'
+		CurVer = s 'GeoIpComEx.GeoIPEx.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F4ACE0F0-73D1-42F6-9521-A76408B433EC} = s 'GeoIPEx Class'
+		{
+			ProgID = s 'GeoIpComEx.GeoIPEx.1'
+			VersionIndependentProgID = s 'GeoIpComEx.GeoIPEx'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{021ABE94-83E1-4541-B18F-33917A10C0CC}'
+		}
+	}
+}

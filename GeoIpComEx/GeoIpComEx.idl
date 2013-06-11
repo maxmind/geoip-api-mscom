@@ -1,0 +1,65 @@
+// GeoIpComEx.idl : IDL source for GeoIpComEx.dll
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (GeoIpComEx.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+	[
+		object,
+		uuid(0907715C-AE40-4DAF-B6BB-21BD61345FC9),
+		dual,
+		helpstring("IGeoIPEx Interface"),
+		pointer_default(unique)
+	]
+	interface IGeoIPEx : IDispatch
+	{
+		[id(1), helpstring("Call to find data for an ip address (dotted quad), true if found")] HRESULT find_by_addr([in] BSTR ip_address, [out,retval] VARIANT_BOOL *found);
+		[id(2), helpstring("Call to find data for a DNS hostname, true if found")] HRESULT find_by_name([in] BSTR ip_address, [out,retval] VARIANT_BOOL *found);
+		[id(3), helpstring("Call first to set path of database files, retuns true if all db files present")] HRESULT set_db_path([in] BSTR newVal, [out,retval] VARIANT_BOOL *present);
+		[propget, id(4), helpstring("Returned 2-char country code, ISO ")] HRESULT country_code([out, retval] BSTR *pVal);
+		[propget, id(5), helpstring("Returned 3-char country code, ISO ")] HRESULT country_code3([out, retval] BSTR *pVal);
+		[propget, id(6), helpstring("Returned Country name in english")] HRESULT country_name([out, retval] BSTR *pVal);
+		[propget, id(7), helpstring("Returned Region name")] HRESULT region([out, retval] BSTR *pVal);
+		[propget, id(8), helpstring("Returned city name")] HRESULT city([out, retval] BSTR *pVal);
+		[propget, id(9), helpstring("Returned postal_code")] HRESULT postal_code([out, retval] BSTR *pVal);
+		[propget, id(10), helpstring("Returned latitude of city")] HRESULT latitude([out, retval] double *pVal);
+		[propget, id(11), helpstring("Returned longitude of city")] HRESULT longitude([out, retval] double *pVal);
+		[propget, id(12), helpstring("Returned dma_code")] HRESULT dma_code([out, retval] long *pVal);
+		[propget, id(13), helpstring("Returned area code")] HRESULT area_code([out, retval] long *pVal);
+		[propget, id(14), helpstring("Returned ISP")] HRESULT ISP([out, retval] BSTR *pVal);
+		[propget, id(15), helpstring("Returned organization")] HRESULT organization([out, retval] BSTR *pVal);
+		[propget, id(16), helpstring("True if country_code supported")] HRESULT supports_country_code([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(17), helpstring("True if country_name supported")] HRESULT supports_country_name([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(18), helpstring("True if city supported")] HRESULT supports_city([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(19), helpstring("True if ISP supported")] HRESULT supports_ISP([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(20), helpstring("True if organization supported")] HRESULT supports_organization([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(21), helpstring("True if country_code3 supported")] HRESULT supports_country_code3([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(22), helpstring("Error Message")] HRESULT error_msg([out, retval] BSTR *pVal);
+		[propget, id(23), helpstring("True if area_code supported")] HRESULT supports_area_code([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(24), helpstring("True if region supported")] HRESULT supports_region([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(25), helpstring("True if dma_code supported")] HRESULT supports_dma_code([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(26), helpstring("True if postal_code supported")] HRESULT supports_postal_code([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(27), helpstring("True if longitude and latitude supported")] HRESULT supports_position([out, retval] VARIANT_BOOL *pVal);
+	};
+
+[
+	uuid(021ABE94-83E1-4541-B18F-33917A10C0CC),
+	version(1.0),
+	helpstring("GeoIpComEx 1.0 Type Library")
+]
+library GEOIPCOMEXLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(F4ACE0F0-73D1-42F6-9521-A76408B433EC),
+		helpstring("GeoIPEx Class")
+	]
+	coclass GeoIPEx
+	{
+		[default] interface IGeoIPEx;
+	};
+};
