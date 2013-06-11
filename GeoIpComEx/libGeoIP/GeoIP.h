@@ -95,10 +95,10 @@ extern const char *GeoIPCityDBFileName;
 extern const char *GeoIPOrgDBFileName;
 extern const char *GeoIPISPDBFileName;
 
-extern const char GeoIP_country_code[254][3];
-extern const char GeoIP_country_code3[254][4];
-extern const char * GeoIP_country_name[254];
-extern const char GeoIP_country_continent[254][3];
+extern const char GeoIP_country_code[255][3];
+extern const char GeoIP_country_code3[255][4];
+extern const char * GeoIP_country_name[255];
+extern const char GeoIP_country_continent[255][3];
 
 #ifdef DLL
 #define GEOIP_API __declspec(dllexport)
