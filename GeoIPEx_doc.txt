@@ -71,7 +71,7 @@ CGeoIPEx::find_by_name(BSTR ip_address, VARIANT_BOOL *found)
 	Method to find info by DNS name; calls find_ip()
 	Sets property fields
 
-CGeoIPEx::find_by_addr(BSTR ip_address, VARIANT_BOOL *found)
+CGeoIPEx::find_by_addr(BSTR ip_address, VARIANT_BOOL *foundCity)
 	Method to find info by ip address (dotted quad string); calls find_ip()
 
 CGeoIPEx::get_country_code(BSTR *pVal)
