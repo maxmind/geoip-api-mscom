@@ -5,25 +5,23 @@ Copyright 2012 MaxMind, Inc.
 General
 -------
 
-GeoIPEx is a COM object wrapper around the Maxmind GeoIP library.
-It returns data from the City, ISP and Organization databases.
-The only added functionality is recognition of non-routed
-IP addresses, for which "dummy" data are returned
-(and no DB lookup is done). See "Special addresses" below.
+GeoIPEx is a COM object wrapper around the Maxmind GeoIP Legacy library. It
+returns data from the City, ISP and Organization databases. The only added
+functionality is recognition of non-routed IP addresses, for which "dummy"
+data are returned (and no DB lookup is done). See "Special addresses" below.
 
 
 Implementation
 --------------
 
-The wrapper code was written in Visual C++ using the wizards etc.
-in Visual Studio 6 (SP5)
-The C code of the GeoIP library (GeoIp.c, GeoIPCity.c)
-remains almost unchanged, except for some #ifdef's in GeoIPCity.c
-to enable it to be built in Visual Studio. (Commented to indicate where.)
-To minimize modifications to the library code, while avoiding a fixed DB
-location, the GeoIP_open_type() routine is not used.
-GeoIP_open() is used instead. This leads to a slight maintenance issue; 
-the names of the three DB files are duplicated in GeoIPEx.cpp.
+The wrapper code was written in Visual C++ using the wizards etc. in Visual
+Studio 6 (SP5) The C code of the GeoIP Legacy library (GeoIp.c, GeoIPCity.c)
+remains almost unchanged, except for some #ifdef's in GeoIPCity.c to enable it
+to be built in Visual Studio. (Commented to indicate where.) To minimize
+modifications to the library code, while avoiding a fixed DB location, the
+GeoIP_open_type() routine is not used. GeoIP_open() is used instead. This
+leads to a slight maintenance issue; the names of the three DB files are
+duplicated in GeoIPEx.cpp.
 
 Source File list
 ----------------
@@ -88,7 +86,7 @@ CGeoIPEx::get_ISP(BSTR *pVal)
 CGeoIPEx::get_organization(BSTR *pVal)
 CGeoIPEx::get_error_msg(BSTR *pVal)
 	Data property reader methods; All return the value from the field with the same name.
-		
+
 CGeoIPEx::get_supports_country_code(VARIANT_BOOL *pVal)
 CGeoIPEx::get_supports_country_name(VARIANT_BOOL *pVal)
 CGeoIPEx::get_supports_city(VARIANT_BOOL *pVal)
@@ -118,13 +116,11 @@ CGeoIPEx::clear_db()
 Building
 --------
 
-After opening the project in VS,
-select Build->Set Active Configuration, choose ("Debug" or "Release MinSize")
-and select Build->Build GeoIpComEx.dll. 
+After opening the project in VS, select Build->Set Active Configuration,
+choose ("Debug" or "Release MinSize") and select Build->Build GeoIpComEx.dll.
 
-If you wish to use other configurations,
-note that precompiled headers are turned off for the C files, and
-wsock32.dll is linked to (for dns lookups).
+If you wish to use other configurations, note that precompiled headers are
+turned off for the C files, and wsock32.dll is linked to (for dns lookups).
 
 
 
@@ -173,7 +169,7 @@ Object interface
 Special addresses
 -----------------
 
-If one of the non-routed ip addresses 
+If one of the non-routed ip addresses
 	10.*.*.*
 	172.16.*.* ... 172.31.*.*
 	192.168.*.*
